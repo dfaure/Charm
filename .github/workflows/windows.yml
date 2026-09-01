@@ -68,3 +68,16 @@ jobs:
 
       - name: Test
         run: ctest --test-dir build-ci --output-on-failure
+
+      - name: Collect the runnable application
+        run: |
+          $dist = "dist/Charm"
+          New-Item -ItemType Directory -Force -Path $dist | Out-Null
+          Copy-Item build-ci/bin/Charm.exe $dist
+          Copy-Item "$env:QTKEYCHAIN_PREFIX/bin/qt5keychain.dll" $dist
+          windeployqt --release "$dist/Charm.exe"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Charm-windows-x64
+          path: dist/Charm
