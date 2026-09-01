@@ -52,11 +52,13 @@ Configuration::Configuration(TaskPrefilteringMode _taskPrefilteringMode,
                              DurationFormat _durationFormat, bool _detectIdling,
                              Qt::ToolButtonStyle _buttonstyle, bool _showStatusBar,
                              bool _warnUnuploadedTimesheets, bool _requestEventComment,
-                             bool _enableCommandInterface, int _numberOfTaskSelectorEntries)
+                             bool _enableCommandInterface, int _numberOfTaskSelectorEntries,
+                             const QColor &_timeTrackerBackgroundColor)
     : taskPrefilteringMode(_taskPrefilteringMode)
     , timeTrackerFontSize(_timeTrackerFontSize)
     , durationFormat(_durationFormat)
     , toolButtonStyle(_buttonstyle)
+    , timeTrackerBackgroundColor(_timeTrackerBackgroundColor)
     , showStatusBar(_showStatusBar)
     , detectIdling(_detectIdling)
     , warnUnuploadedTimesheets(_warnUnuploadedTimesheets)
@@ -72,6 +74,7 @@ bool Configuration::operator==(const Configuration &other) const
     return user == other.user
            && taskPrefilteringMode == other.taskPrefilteringMode
            && timeTrackerFontSize == other.timeTrackerFontSize
+           && timeTrackerBackgroundColor == other.timeTrackerBackgroundColor
            && durationFormat == other.durationFormat
            && detectIdling == other.detectIdling
            && warnUnuploadedTimesheets == other.warnUnuploadedTimesheets
@@ -145,6 +148,7 @@ void Configuration::dump(const QString &why)
              << "--> local storage database:   " << localStorageDatabase << Qt::endl
              << "--> task prefiltering mode:   " << taskPrefilteringMode << Qt::endl
              << "--> task tracker font size:   " << timeTrackerFontSize << Qt::endl
+             << "--> task tracker background:  " << timeTrackerBackgroundColor << Qt::endl
              << "--> duration format:          " << durationFormat << Qt::endl
              << "--> Idle Detection:           " << detectIdling << Qt::endl
              << "--> toolButtonStyle:          " << toolButtonStyle << Qt::endl

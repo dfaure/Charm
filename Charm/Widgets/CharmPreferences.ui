@@ -259,6 +259,40 @@
        </property>
       </widget>
      </item>
+     <item row="8" column="0" alignment="Qt::AlignRight">
+      <widget class="QLabel" name="lbTimeTrackerBackgroundColor">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Time tracker window background</string>
+       </property>
+       <property name="buddy">
+        <cstring>pbTimeTrackerBackgroundColor</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="2">
+      <layout class="QHBoxLayout" name="timeTrackerBackgroundColorLayout">
+       <item>
+        <widget class="QPushButton" name="pbTimeTrackerBackgroundColor">
+         <property name="text">
+          <string>Choose...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pbResetTimeTrackerBackgroundColor">
+         <property name="text">
+          <string>Default</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
     </layout>
    </item>
    <item>
@@ -292,6 +326,8 @@
   <tabstop>cbDurationFormat</tabstop>
   <tabstop>cbIdleDetection</tabstop>
   <tabstop>cbWarnUnuploadedTimesheets</tabstop>
+  <tabstop>pbTimeTrackerBackgroundColor</tabstop>
+  <tabstop>pbResetTimeTrackerBackgroundColor</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

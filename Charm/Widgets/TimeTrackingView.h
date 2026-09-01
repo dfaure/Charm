@@ -58,8 +58,10 @@ private:
         QBrush headerEvenDayBrush;
         QBrush halfHighlight;
         QColor runningTaskColor;
+        QColor textColor;
         float dim;
-        void initialize(const QPalette &palette);
+        /** @p background is the user-chosen background color, or invalid to use @p palette. */
+        void initialize(const QPalette &palette, const QColor &background);
     };
 
 public:

@@ -222,6 +222,9 @@ void Controller::persistMetaData(Configuration &configuration)
           QString().setNum(configuration.taskPrefilteringMode) },
         { MetaKey_Key_TimeTrackerFontSize,
           QString().setNum(configuration.timeTrackerFontSize) },
+        { MetaKey_Key_TimeTrackerBackgroundColor,
+          configuration.timeTrackerBackgroundColor.isValid()
+          ? configuration.timeTrackerBackgroundColor.name() : QString() },
         { MetaKey_Key_DurationFormat,
           QString::number(configuration.durationFormat) },
         { MetaKey_Key_IdleDetection,
@@ -264,6 +267,8 @@ void Controller::provideMetaData(Configuration &configuration)
     configuration.user.setName(m_storage->getMetaData(MetaKey_Key_UserName));
 
     loadConfigValue(MetaKey_Key_TimeTrackerFontSize, configuration.timeTrackerFontSize);
+    loadConfigValue(MetaKey_Key_TimeTrackerBackgroundColor,
+                    configuration.timeTrackerBackgroundColor);
     loadConfigValue(MetaKey_Key_DurationFormat, configuration.durationFormat);
     loadConfigValue(MetaKey_Key_SubscribedTasksOnly, configuration.taskPrefilteringMode);
     loadConfigValue(MetaKey_Key_IdleDetection, configuration.detectIdling);

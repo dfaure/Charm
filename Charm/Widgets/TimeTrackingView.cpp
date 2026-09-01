@@ -47,7 +47,7 @@ TimeTrackingView::TimeTrackingView(QWidget *parent)
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     // plumbing
     QLocale locale;
-    m_paintAttributes.initialize(palette());
+    m_paintAttributes.initialize(palette(), CONFIGURATION.timeTrackerBackgroundColor);
     for (int i = 0; i < 7; ++i)
         m_shortDayNames[i] = locale.standaloneDayName(i+1, QLocale::ShortFormat);
 
@@ -67,13 +67,27 @@ void TimeTrackingView::populateEditMenu(QMenu *menu)
     m_taskSelector->populateEditMenu(menu);
 }
 
-void TimeTrackingView::PaintAttributes::initialize(const QPalette &palette)
+/** darker() cannot darken an almost black color, lighten those instead. */
+static QColor shaded(const QColor &color, int factor)
 {
-    headerBrush = palette.mid();
-    taskBrushEven = palette.light();
-    taskBrushOdd = palette.midlight();
+    return color.lightness() > 64 ? color.darker(factor) : color.lighter(factor);
+}
+
+void TimeTrackingView::PaintAttributes::initialize(const QPalette &palette, const QColor &background)
+{
+    if (background.isValid()) {
+        taskBrushEven = background;
+        taskBrushOdd = shaded(background, 112);
+        headerBrush = shaded(background, 135);
+        textColor = background.lightness() > 128 ? Qt::black : Qt::white;
+    } else {
+        headerBrush = palette.mid();
+        taskBrushEven = palette.light();
+        taskBrushOdd = palette.midlight();
+        textColor = palette.text().color();
+    }
     totalsRowBrush = headerBrush;
-    totalsRowEvenDayBrush = QBrush(taskBrushEven.color().darker(125));
+    totalsRowEvenDayBrush = QBrush(shaded(taskBrushEven.color(), 125));
     headerEvenDayBrush = totalsRowEvenDayBrush;
     QColor dimHighlight = palette.highlight().color();
     dim = 0.25;
@@ -177,7 +191,7 @@ void TimeTrackingView::paintEvent(QPaintEvent *e)
                     painter.setPen(Qt::NoPen);
                     painter.drawRect(fieldRect);
                 }
-                painter.setPen(palette().text().color());
+                painter.setPen(m_paintAttributes.textColor);
                 painter.setFont(field.font);
                 painter.drawText(textRect, alignment, field.text);
             }
@@ -360,6 +374,8 @@ bool TimeTrackingView::isTracking() const
 
 void TimeTrackingView::configurationChanged()
 {
+    m_paintAttributes.initialize(palette(), CONFIGURATION.timeTrackerBackgroundColor);
+
     m_fixedFont = font();
 #ifdef Q_OS_OSX
     m_fixedFont.setFamily(QStringLiteral("Andale Mono"));

@@ -31,9 +31,12 @@
 #include "Lotsofcake/Configuration.h"
 
 #include <QCheckBox>
+#include <QColorDialog>
 #include <QMessageBox>
 #include <QLineEdit>
 #include <QInputDialog>
+#include <QPixmap>
+#include <QPushButton>
 
 CharmPreferences::CharmPreferences(const Configuration &config, QWidget *parent_)
     : QDialog(parent_)
@@ -58,6 +61,13 @@ CharmPreferences::CharmPreferences(const Configuration &config, QWidget *parent_
 
     connect(m_ui.cbWarnUnuploadedTimesheets, &QCheckBox::toggled,
             this, &CharmPreferences::slotWarnUnuploadedChanged);
+    connect(m_ui.pbTimeTrackerBackgroundColor, &QPushButton::clicked,
+            this, &CharmPreferences::slotChooseTimeTrackerBackgroundColor);
+    connect(m_ui.pbResetTimeTrackerBackgroundColor, &QPushButton::clicked,
+            this, &CharmPreferences::slotResetTimeTrackerBackgroundColor);
+
+    m_timeTrackerBackgroundColor = config.timeTrackerBackgroundColor;
+    updateTimeTrackerBackgroundColorButton();
 
     // this would not need a switch, but i hate casting enums to int:
     switch (config.timeTrackerFontSize) {
@@ -163,6 +173,47 @@ Configuration::TimeTrackerFontSize CharmPreferences::timeTrackerFontSize() const
     }
     // always return something, to avoid compiler warning:
     return Configuration::TimeTrackerFont_Regular;
+}
+
+QColor CharmPreferences::timeTrackerBackgroundColor() const
+{
+    return m_timeTrackerBackgroundColor;
+}
+
+void CharmPreferences::slotChooseTimeTrackerBackgroundColor()
+{
+    const QColor initial = m_timeTrackerBackgroundColor.isValid()
+                           ? m_timeTrackerBackgroundColor
+                           : palette().window().color();
+    const QColor color = QColorDialog::getColor(initial, this,
+                                                tr("Time Tracker Window Background"));
+    if (!color.isValid()) // dialog cancelled
+        return;
+    m_timeTrackerBackgroundColor = color;
+    updateTimeTrackerBackgroundColorButton();
+}
+
+void CharmPreferences::slotResetTimeTrackerBackgroundColor()
+{
+    m_timeTrackerBackgroundColor = QColor();
+    updateTimeTrackerBackgroundColorButton();
+}
+
+void CharmPreferences::updateTimeTrackerBackgroundColorButton()
+{
+    QPushButton *button = m_ui.pbTimeTrackerBackgroundColor;
+    if (m_timeTrackerBackgroundColor.isValid()) {
+        const qreal dpr = devicePixelRatioF();
+        QPixmap swatch(button->iconSize() * dpr);
+        swatch.setDevicePixelRatio(dpr);
+        swatch.fill(m_timeTrackerBackgroundColor);
+        button->setIcon(QIcon(swatch));
+        button->setText(m_timeTrackerBackgroundColor.name());
+    } else {
+        button->setIcon(QIcon());
+        button->setText(tr("Choose..."));
+    }
+    m_ui.pbResetTimeTrackerBackgroundColor->setEnabled(m_timeTrackerBackgroundColor.isValid());
 }
 
 Qt::ToolButtonStyle CharmPreferences::toolButtonStyle() const

@@ -25,6 +25,7 @@
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
+#include <QColor>
 #include <QObject>
 
 #include "User.h"
@@ -75,6 +76,8 @@ public:
     TimeTrackerFontSize timeTrackerFontSize = TimeTrackerFont_Regular;
     DurationFormat durationFormat = Minutes;
     Qt::ToolButtonStyle toolButtonStyle = Qt::ToolButtonFollowStyle;
+    // background of the time tracker window; invalid means "use the application palette"
+    QColor timeTrackerBackgroundColor;
     bool showStatusBar = true;
     bool detectIdling = true;
     bool warnUnuploadedTimesheets = true;
@@ -103,7 +106,8 @@ private:
     Configuration(TaskPrefilteringMode taskPrefilteringMode, TimeTrackerFontSize,
                   DurationFormat durationFormat, bool detectIdling, Qt::ToolButtonStyle buttonstyle,
                   bool showStatusBar, bool warnUnuploadedTimesheets, bool _requestEventComment,
-                  bool enableCommandInterface, int _numberOfTaskSelectorEntries);
+                  bool enableCommandInterface, int _numberOfTaskSelectorEntries,
+                  const QColor &timeTrackerBackgroundColor);
     Configuration();
 };
 

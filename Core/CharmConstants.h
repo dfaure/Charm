@@ -67,6 +67,7 @@ extern const QString MetaKey_Key_LocalStorageDatabase;
 extern const QString MetaKey_Key_LocalStorageType;
 extern const QString MetaKey_Key_SubscribedTasksOnly;
 extern const QString MetaKey_Key_TimeTrackerFontSize;
+extern const QString MetaKey_Key_TimeTrackerBackgroundColor;
 extern const QString MetaKey_Key_DurationFormat;
 extern const QString MetaKey_Key_IdleDetection;
 extern const QString MetaKey_Key_WarnUnuploadedTimesheets;
@@ -95,6 +96,12 @@ template<> inline int strToT(const QString &str)
 template<> inline bool strToT(const QString &str)
 {
     return str.simplified() == TrueString;
+}
+
+/** An unparsable (or empty) name gives an invalid color, i.e. "use the application palette". */
+template<> inline QColor strToT(const QString &str)
+{
+    return QColor(str);
 }
 
 #define INT_CONFIG_TYPE(TYPE) \

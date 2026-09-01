@@ -304,6 +304,7 @@ void TimeTrackingWindow::slotEditPreferences(bool)
 
     if (dialog.exec()) {
         CONFIGURATION.timeTrackerFontSize = dialog.timeTrackerFontSize();
+        CONFIGURATION.timeTrackerBackgroundColor = dialog.timeTrackerBackgroundColor();
         CONFIGURATION.durationFormat = dialog.durationFormat();
         CONFIGURATION.toolButtonStyle = dialog.toolButtonStyle();
         CONFIGURATION.detectIdling = dialog.detectIdling();

@@ -47,11 +47,18 @@ public:
     Qt::ToolButtonStyle toolButtonStyle() const;
 
     Configuration::TimeTrackerFontSize timeTrackerFontSize() const;
+    /** An invalid color means the application palette is used. */
+    QColor timeTrackerBackgroundColor() const;
 private Q_SLOTS:
     void slotWarnUnuploadedChanged(bool);
+    void slotChooseTimeTrackerBackgroundColor();
+    void slotResetTimeTrackerBackgroundColor();
 
 private:
+    void updateTimeTrackerBackgroundColorButton();
+
     Ui::CharmPreferences m_ui;
+    QColor m_timeTrackerBackgroundColor;
 };
 
 #endif

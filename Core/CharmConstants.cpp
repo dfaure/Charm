@@ -59,6 +59,8 @@ const QString MetaKey_Key_LocalStorageDatabase = QStringLiteral("LocalStorageDat
 const QString MetaKey_Key_LocalStorageType = QStringLiteral("LocalStorageType");
 const QString MetaKey_Key_SubscribedTasksOnly = QStringLiteral("SubscribedTasksOnly");
 const QString MetaKey_Key_TimeTrackerFontSize = QStringLiteral("TimeTrackerFontSize");
+const QString MetaKey_Key_TimeTrackerBackgroundColor
+    = QStringLiteral("TimeTrackerBackgroundColor");
 const QString MetaKey_Key_24hEditing = QStringLiteral("Key24hEditing");
 const QString MetaKey_Key_DurationFormat = QStringLiteral("DurationFormat");
 const QString MetaKey_Key_IdleDetection = QStringLiteral("IdleDetection");
