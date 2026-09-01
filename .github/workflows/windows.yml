@@ -18,8 +18,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # the top-level CMakeLists runs "git describe --tags" to get the version
+          # the top-level CMakeLists runs "git describe --tags" for the version,
+          # so it needs the tag and the history back to it
           fetch-depth: 0
+          fetch-tags: true
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
