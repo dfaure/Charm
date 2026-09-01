@@ -74,8 +74,10 @@ jobs:
           $dist = "dist/Charm"
           New-Item -ItemType Directory -Force -Path $dist | Out-Null
           Copy-Item build-ci/bin/Charm.exe $dist
-          Copy-Item "$env:QTKEYCHAIN_PREFIX/bin/qt5keychain.dll" $dist
           windeployqt --release "$dist/Charm.exe"
+          # after windeployqt, which takes the qt5 prefix for a Qt module and
+          # looks for it in the Qt directory
+          Copy-Item "$env:QTKEYCHAIN_PREFIX/bin/qt5keychain.dll" $dist
 
       - uses: actions/upload-artifact@v4
         with:
