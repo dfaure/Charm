@@ -31,6 +31,7 @@
 
 #include <QCalendarWidget>
 #include <QDialogButtonBox>
+#include <QLocale>
 #include <QSettings>
 #include <QTextBrowser>
 
@@ -159,7 +160,7 @@ void EnterVacationDialog::createEvents()
         const QDate eventEnd = event.endDateTime().date();
         Q_ASSERT(eventStart == eventEnd);
         Q_UNUSED(eventEnd)   //release mode
-        const QString shortDate = eventStart.toString(Qt::DefaultLocaleShortDate);
+        const QString shortDate = QLocale().toString(eventStart, QLocale::ShortFormat);
         const QString duration = formatDuration(event.startDateTime(), event.endDateTime());
 
         const QString htmlShortDate = shortDate.toHtmlEscaped();

@@ -23,6 +23,8 @@
 
 #include "CharmCommandServer.h"
 
+#include <QIODevice>
+
 #include "CharmCommandSession.h"
 
 #include "CharmCMake.h"

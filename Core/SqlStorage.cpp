@@ -401,15 +401,15 @@ bool SqlStorage::runQuery(QSqlQuery &query)
 {
 #if 0
     const auto MARKER = "============================================================";
-    qDebug() << MARKER << endl << "SqlStorage::runQuery: executing query:"
-             << endl << query.executedQuery();
+    qDebug() << MARKER << Qt::endl << "SqlStorage::runQuery: executing query:"
+             << Qt::endl << query.executedQuery();
     bool result = query.exec();
     if (result) {
-        qDebug() << "SqlStorage::runQuery: SUCCESS" << endl << MARKER;
+        qDebug() << "SqlStorage::runQuery: SUCCESS" << Qt::endl << MARKER;
     } else {
-        qDebug() << "SqlStorage::runQuery: FAILURE" << endl
-                 << "Database says: " << query.lastError().databaseText() << endl
-                 << "Driver says:   " << query.lastError().driverText() << endl
+        qDebug() << "SqlStorage::runQuery: FAILURE" << Qt::endl
+                 << "Database says: " << query.lastError().databaseText() << Qt::endl
+                 << "Driver says:   " << query.lastError().driverText() << Qt::endl
                  << MARKER;
     }
     return result;

@@ -48,11 +48,12 @@
 #include <QFile>
 #include <QApplication>
 #include <QStandardPaths>
+#include <QRegularExpression>
 
 #ifdef Q_OS_WIN
-#include <QtWinExtras/QWinJumpList>
-#include <QtWinExtras/QWinJumpListCategory>
-#include <QtWinExtras/QWinThumbnailToolBar>
+#include "QtWinExtras/qwinjumplist.h"
+#include "QtWinExtras/qwinjumplistcategory.h"
+#include "QtWinExtras/qwinthumbnailtoolbar.h"
 #endif
 
 #ifdef Q_OS_WIN
@@ -117,7 +118,7 @@ ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *
     QString charmHomeEnv(QString::fromLocal8Bit(qgetenv("CHARM_HOME")));
     if (!charmHomeEnv.isEmpty()) {
         serverName.append(QStringLiteral("_%1").arg(
-                              charmHomeEnv.replace(QRegExp(QLatin1String(":?/|:?\\\\")),
+                              charmHomeEnv.replace(QRegularExpression(QLatin1String(":?/|:?\\\\")),
                                                    QStringLiteral("_"))));
     }
 #ifndef NDEBUG
@@ -663,7 +664,7 @@ static QString charmDataDir()
     const QByteArray charmHome = qgetenv("CHARM_HOME");
     if (!charmHome.isEmpty())
         return QFile::decodeName(charmHome) + QLatin1String("/data/");
-    return QStandardPaths::writableLocation(QStandardPaths::DataLocation) + QLatin1Char('/');
+    return QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation) + QLatin1Char('/');
 }
 
 bool ApplicationCore::configure()

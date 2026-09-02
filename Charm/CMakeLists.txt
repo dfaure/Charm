@@ -76,6 +76,22 @@ IF (APPLE)
     LIST(APPEND CharmApplication_SRCS MacApplicationCore.mm)
 ENDIF()
 
+IF (WIN32)
+    # QtWinExtras was removed in Qt6; the jump list and the thumbnail toolbar
+    # are built from the copy in QtWinExtras/.
+    LIST(APPEND CharmApplication_SRCS
+        QtWinExtras/qwinevent.cpp
+        QtWinExtras/qwineventfilter.cpp
+        QtWinExtras/qwinfunctions.cpp
+        QtWinExtras/qwinjumplist.cpp
+        QtWinExtras/qwinjumplistcategory.cpp
+        QtWinExtras/qwinjumplistitem.cpp
+        QtWinExtras/qwinthumbnailtoolbar.cpp
+        QtWinExtras/qwinthumbnailtoolbutton.cpp
+        QtWinExtras/windowsguidsdefs.cpp
+    )
+ENDIF()
+
 SET(CharmApplication_LIBS)
 
 IF (APPLE)
@@ -112,37 +128,24 @@ IF( CHARM_IDLE_DETECTION )
         LIST( APPEND CharmApplication_SRCS Idle/WindowsIdleDetector.cpp )
     ELSEIF( UNIX )
         SET( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/CMake/Modules/ )
-        IF( Qt5Core_FOUND )
-            FIND_PACKAGE( XCB )
-            SET_PACKAGE_PROPERTIES(XCB PROPERTIES
-                                   DESCRIPTION "Provides idle detection support for X11"
-                                   URL "http://xcb.freedesktop.org"
-                                   TYPE RECOMMENDED)
-            IF( XCB_FOUND)
-                INCLUDE_DIRECTORIES( ${XCB_INCLUDE_DIRS} )
-                LIST( APPEND CharmApplication_LIBS ${XCB_LIBRARIES} ${XCB_SCREENSAVER_LIBRARIES} )
-                LIST( APPEND CharmApplication_SRCS Idle/X11IdleDetector.cpp )
-                SET( CHARM_IDLE_DETECTION_AVAILABLE "1" CACHE INTERNAL "" )
-            ELSE()
-                SET( CHARM_IDLE_DETECTION_AVAILABLE "0" CACHE INTERNAL "" )
-                MESSAGE( STATUS "Qt5: Install Xcb headers and library for Xcb idle detection." )
-            ENDIF()
+        FIND_PACKAGE( XCB )
+        SET_PACKAGE_PROPERTIES(XCB PROPERTIES
+                               DESCRIPTION "Provides idle detection support for X11"
+                               URL "http://xcb.freedesktop.org"
+                               TYPE RECOMMENDED)
+        IF( XCB_FOUND)
+            INCLUDE_DIRECTORIES( ${XCB_INCLUDE_DIRS} )
+            LIST( APPEND CharmApplication_LIBS ${XCB_LIBRARIES} ${XCB_SCREENSAVER_LIBRARIES} )
+            LIST( APPEND CharmApplication_SRCS Idle/X11IdleDetector.cpp )
+            SET( CHARM_IDLE_DETECTION_AVAILABLE "1" CACHE INTERNAL "" )
         ELSE()
-            FIND_PACKAGE( X11 )
-            IF(  X11_FOUND AND X11_Xscreensaver_LIB)
-                INCLUDE_DIRECTORIES( ${X11_INCLUDE_DIR} )
-                LIST( APPEND CharmApplication_LIBS ${X11_X11_LIB} ${X11_Xscreensaver_LIB} )
-                LIST( APPEND CharmApplication_SRCS Idle/X11IdleDetector.cpp )
-                SET( CHARM_IDLE_DETECTION_AVAILABLE "1" CACHE INTERNAL "" )
-            ELSE()
-                SET( CHARM_IDLE_DETECTION_AVAILABLE "0" CACHE INTERNAL "" )
-                MESSAGE( STATUS "Qt4: Install X11/XScreenSaver headers and library for X11 idle detection." )
-            ENDIF()
+            SET( CHARM_IDLE_DETECTION_AVAILABLE "0" CACHE INTERNAL "" )
+            MESSAGE( STATUS "Install Xcb headers and library for Xcb idle detection." )
         ENDIF()
     ENDIF()
 ENDIF()
 
-QT5_WRAP_UI(
+QT6_WRAP_UI(
     UiGenerated_SRCS
     Widgets/CommentEditorPopup.ui
     Widgets/ConfigurationDialog.ui
@@ -163,7 +166,7 @@ QT5_WRAP_UI(
     Widgets/FindAndReplaceEventsDialog.ui
 )
 
-QT5_ADD_RESOURCES( Resources_SRCS CharmResources.qrc )
+QT6_ADD_RESOURCES( Resources_SRCS CharmResources.qrc )
 
 ADD_LIBRARY(
     CharmApplication STATIC
@@ -172,23 +175,22 @@ ADD_LIBRARY(
 
 kde_target_enable_exceptions( CharmApplication PUBLIC )
 TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS}
-    Qt5::Core
-    Qt5::Widgets
-    Qt5::Xml
-    Qt5::Network
-    Qt5::Sql
-    Qt5::PrintSupport
-    qt5keychain)
+    Qt6::Core
+    Qt6::Widgets
+    Qt6::Xml
+    Qt6::Network
+    Qt6::Sql
+    Qt6::PrintSupport
+    qt6keychain)
 
 IF (WIN32)
     TARGET_LINK_LIBRARIES(CharmApplication
-        Qt5::WinExtras
         Crypt32)
 ENDIF()
 
-IF(TARGET Qt5::DBus)
+IF(TARGET Qt6::DBus)
     TARGET_LINK_LIBRARIES(CharmApplication
-        Qt5::DBus)
+        Qt6::DBus)
 ENDIF()
 
 IF (APPLE)
@@ -196,7 +198,7 @@ IF (APPLE)
     FIND_LIBRARY(APPKIT_LIBRARY AppKit)
     FIND_LIBRARY(SECURITY_LIBRARY Security)
     TARGET_LINK_LIBRARIES(CharmApplication
-        Qt5::MacExtras ${APPKIT_LIBRARY} ${COREFOUNDATION_LIBRARY} ${SECURITY_LIBRARY})
+        ${APPKIT_LIBRARY} ${COREFOUNDATION_LIBRARY} ${SECURITY_LIBRARY})
 ENDIF()
 
 TARGET_INCLUDE_DIRECTORIES(CharmApplication PRIVATE ${QTKEYCHAIN_INCLUDE_DIRS})
@@ -235,7 +237,7 @@ TARGET_LINK_LIBRARIES( ${Charm_EXECUTABLE} CharmApplication CharmCore)
 MESSAGE( STATUS "Charm will be installed to ${CMAKE_INSTALL_PREFIX}" )
 
 IF( UNIX AND NOT APPLE )
-    INSTALL( FILES charmtimetracker.desktop DESTINATION ${CMAKE_INSTALL_APPDIR})
+    INSTALL( FILES charmtimetracker.desktop DESTINATION ${KDE_INSTALL_APPDIR})
 
     ecm_install_icons( ICONS Icons/16-apps-Charm.png
                              Icons/32-apps-Charm.png
@@ -244,7 +246,7 @@ IF( UNIX AND NOT APPLE )
                              Icons/128-apps-Charm.png
                              Icons/256-apps-Charm.png
                        DESTINATION
-                            ${CMAKE_INSTALL_ICONDIR})
+                            ${KDE_INSTALL_ICONDIR})
 ENDIF()
 
 INSTALL( TARGETS ${Charm_EXECUTABLE} ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} )

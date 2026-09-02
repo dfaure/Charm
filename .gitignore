@@ -1,5 +1,7 @@
 .DS_Store
 b/
+build*/
+CMakeUserPresets.json
 Charm.app
 CharmCMake.h
 cmake_install.cmake

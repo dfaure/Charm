@@ -34,6 +34,7 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
+#include <QLocale>
 #include <QPushButton>
 #include <QTimer>
 #include <QtAlgorithms>
@@ -449,9 +450,12 @@ void ActivityReport::slotUpdate()
             } else {
                 row1Texts = QStringList {
                     tr("%1 %2-%3 (%4) -- [%5] %6")
-                    .arg(event.startDateTime().date().toString(Qt::SystemLocaleShortDate).trimmed(),
-                         event.startDateTime().time().toString(Qt::SystemLocaleShortDate).trimmed(),
-                         event.endDateTime().time().toString(Qt::SystemLocaleShortDate).trimmed(),
+                    .arg(QLocale::system().toString(event.startDateTime().date(),
+                                                    QLocale::ShortFormat).trimmed(),
+                         QLocale::system().toString(event.startDateTime().time(),
+                                                    QLocale::ShortFormat).trimmed(),
+                         QLocale::system().toString(event.endDateTime().time(),
+                                                    QLocale::ShortFormat).trimmed(),
                          hoursAndMinutes(event.duration()),
                          paddedId,
                          m_properties.showFullDescription ? DATAMODEL->fullTaskName(

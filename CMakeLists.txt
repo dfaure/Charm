@@ -1,10 +1,13 @@
-CMAKE_MINIMUM_REQUIRED( VERSION 2.8.12 )
+CMAKE_MINIMUM_REQUIRED( VERSION 3.16 )
 PROJECT( Charm CXX )
 
 include(FeatureSummary)
 
 set(ECM_MODULE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECM/modules/")
 set(CMAKE_MODULE_PATH ${ECM_MODULE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/ECM/kde-modules" )
+
+# ECM is vendored, so there is no find_package(ECM) to tell it which Qt to use.
+set(QT_MAJOR_VERSION 6)
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)
@@ -40,24 +43,14 @@ ENDIF()
 
 MESSAGE( STATUS "Building Charm ${Charm_VERSION} in ${CMAKE_BUILD_TYPE} mode" )
 
-find_package(Qt5 5.15 COMPONENTS Core Widgets Xml Network Sql Test PrintSupport REQUIRED)
-
-if(WIN32)
-    find_package(Qt5WinExtras REQUIRED)
-endif()
-
-IF(APPLE)
-    find_package(Qt5MacExtras REQUIRED)
-ENDIF()
+find_package(Qt6 6.5 COMPONENTS Core Widgets Xml Network Sql Test PrintSupport REQUIRED)
 
 IF(UNIX AND NOT APPLE)
-    find_package(Qt5DBus QUIET)
+    find_package(Qt6 COMPONENTS DBus QUIET)
 ENDIF()
 
-
-
-find_package(Qt5Keychain REQUIRED)
-set_package_properties(Qt5Keychain PROPERTIES
+find_package(Qt6Keychain REQUIRED)
+set_package_properties(Qt6Keychain PROPERTIES
                                    DESCRIPTION "Provides support for secure credentials storage"
                                    URL "https://github.com/frankosterfeld/qtkeychain"
                                    TYPE REQUIRED)
@@ -74,7 +67,7 @@ ELSE()
 ENDIF()
 
 SET( BIN_INSTALL_DIR bin )
-SET( DOC_INSTALL_DIR ${CMAKE_INSTALL_DOCBUNDLEDIR}/${Charm_EXECUTABLE} )
+SET( DOC_INSTALL_DIR ${KDE_INSTALL_DOCBUNDLEDIR}/${Charm_EXECUTABLE} )
 SET( ICONS_DIR "${CMAKE_SOURCE_DIR}/Charm/Icons" )
 
 IF( CHARM_PREPARE_DEPLOY AND WIN32 OR APPLE)

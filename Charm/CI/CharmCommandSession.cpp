@@ -233,7 +233,7 @@ void CharmCommandSession::handleCommand(QByteArray payload)
     const QString command = QLatin1String(buffer.readLine().trimmed());
 
     const QStringList segment
-        = command.split(QChar::Space, QString::SkipEmptyParts);
+        = command.split(QChar::Space, Qt::SkipEmptyParts);
 
     if (segment.isEmpty()) {
         qDebug("Received empty command...");

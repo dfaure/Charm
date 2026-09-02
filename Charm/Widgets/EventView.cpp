@@ -71,7 +71,7 @@ EventView::EventView(QWidget *parent)
 {
     setWindowTitle(tr("Event Editor"));
     auto layout = new QVBoxLayout(this);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(0);
     layout->addWidget(m_toolBar);
     layout->addWidget(m_listView);

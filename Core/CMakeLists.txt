@@ -30,4 +30,4 @@ ADD_LIBRARY( CharmCore STATIC ${CharmCore_SRCS} )
 
 kde_target_enable_exceptions( CharmCore PUBLIC )
 
-TARGET_LINK_LIBRARIES( CharmCore Qt5::Core Qt5::Widgets Qt5::Sql Qt5::Xml)
+TARGET_LINK_LIBRARIES( CharmCore Qt6::Core Qt6::Widgets Qt6::Sql Qt6::Xml)

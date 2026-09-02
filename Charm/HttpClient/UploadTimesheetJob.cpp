@@ -31,6 +31,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QUrlQuery>
+#include <QRegularExpression>
 
 UploadTimesheetJob::UploadTimesheetJob(QObject *parent)
     : HttpJob(parent)
@@ -87,7 +88,7 @@ void UploadTimesheetJob::executeRequest(QNetworkAccessManager *manager)
     QByteArray uploadName;
 
     /* validate filename */
-    if (!m_fileName.contains(QRegExp(QStringLiteral("^WeeklyTimeSheet-\\d\\d\\d\\d-\\d\\d$")))) {
+    if (!m_fileName.contains(QRegularExpression(QStringLiteral("^WeeklyTimeSheet-\\d\\d\\d\\d-\\d\\d$")))) {
         qDebug("Invalid filename encountered, using default (\"payload\").");
         uploadName = "payload";
     } else {

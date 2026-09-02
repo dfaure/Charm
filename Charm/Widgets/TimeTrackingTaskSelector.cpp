@@ -44,10 +44,10 @@
 #include <QToolButton>
 
 #ifdef Q_OS_WIN
-#include <QtWinExtras/QWinJumpList>
-#include <QtWinExtras/QWinJumpListCategory>
-#include <QtWinExtras/QWinThumbnailToolBar>
-#include <QtWinExtras/QWinThumbnailToolButton>
+#include "QtWinExtras/qwinjumplist.h"
+#include "QtWinExtras/qwinjumplistcategory.h"
+#include "QtWinExtras/qwinthumbnailtoolbar.h"
+#include "QtWinExtras/qwinthumbnailtoolbutton.h"
 #endif
 
 namespace {
