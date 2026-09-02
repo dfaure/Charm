@@ -38,6 +38,7 @@ SET(
     Widgets/ActivityReport.cpp
     Widgets/BillDialog.cpp
     Widgets/CharmPreferences.cpp
+    Widgets/WorkTimeContractDialog.cpp
     Widgets/CharmWindow.cpp
     Widgets/CharmAboutDialog.cpp
     Widgets/CharmNewReleaseDialog.cpp
@@ -150,6 +151,7 @@ QT6_WRAP_UI(
     Widgets/CommentEditorPopup.ui
     Widgets/ConfigurationDialog.ui
     Widgets/CharmPreferences.ui
+    Widgets/WorkTimeContractDialog.ui
     Widgets/TaskIdDialog.ui
     Widgets/TaskEditor.ui
     Widgets/EnterVacationDialog.ui

@@ -69,6 +69,13 @@ void WorkTimeContractTests::testExpectedSecondsSeveralPeriods()
     QCOMPARE(contract.expectedSeconds(Feb5th2024), 5 * 35 * OneHour);
     // one week after the rate change
     QCOMPARE(contract.expectedSeconds(Feb5th2024.addDays(7)), (5 * 35 + 20) * OneHour);
+
+    // three periods, the middle one lasting a single week
+    const WorkTimeContract three { { { Jan1st2024, 35.0 },
+                                     { Jan8th2024, 10.0 },
+                                     { Feb5th2024, 20.0 } } };
+    QCOMPARE(three.expectedSeconds(Feb5th2024), (35 + 4 * 10) * OneHour);
+    QCOMPARE(three.expectedSeconds(Feb5th2024.addDays(14)), (35 + 4 * 10 + 2 * 20) * OneHour);
 }
 
 void WorkTimeContractTests::testExpectedSecondsEdgeCases()

@@ -54,15 +54,20 @@ public:
 private Q_SLOTS:
     void slotWarnUnuploadedChanged(bool);
     void slotOvertimeCounterToggled(bool);
-    void slotContractStartDateChanged(const QDate &date);
+    void slotEditWorkTimeContract();
     void slotChooseTimeTrackerBackgroundColor();
     void slotResetTimeTrackerBackgroundColor();
 
+protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
+
 private:
     void updateTimeTrackerBackgroundColorButton();
+    void updateWorkTimeContractLabel();
 
     Ui::CharmPreferences m_ui;
     QColor m_timeTrackerBackgroundColor;
+    WorkTimeContract m_workTimeContract;
 };
 
 #endif
