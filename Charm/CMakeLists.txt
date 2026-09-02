@@ -184,8 +184,14 @@ TARGET_LINK_LIBRARIES(CharmApplication ${CharmApplication_LIBS}
     qt6keychain)
 
 IF (WIN32)
+    # dwmapi, ole32, shlwapi, shell32 and gdi32 are what QtWinExtras linked against
     TARGET_LINK_LIBRARIES(CharmApplication
-        Crypt32)
+        Crypt32
+        dwmapi
+        ole32
+        shlwapi
+        shell32
+        gdi32)
 ENDIF()
 
 IF(TARGET Qt6::DBus)
