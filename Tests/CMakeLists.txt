@@ -40,6 +40,7 @@ TARGET_LINK_LIBRARIES( DatesTests ${TEST_LIBRARIES} )
 SET( SmartNameCacheTests_SRCS SmartNameCacheTests.cpp )
 ADD_EXECUTABLE( SmartNameCacheTests ${SmartNameCacheTests_SRCS} )
 TARGET_LINK_LIBRARIES( SmartNameCacheTests ${TEST_LIBRARIES} )
+ADD_TEST( NAME SmartNameCacheTests COMMAND SmartNameCacheTests )
 
 SET( CharmDataModelTests_SRCS CharmDataModelTests.cpp )
 ADD_EXECUTABLE( CharmDataModelTests ${CharmDataModelTests_SRCS} )

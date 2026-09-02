@@ -23,6 +23,8 @@
 
 #include "SmartNameCache.h"
 
+#include <algorithm>
+
 struct IdLessThan
 {
     bool operator()(const Task &lhs, const Task &rhs) const
@@ -30,6 +32,15 @@ struct IdLessThan
         return lhs.id() < rhs.id();
     }
 };
+
+/** Returns @p end if there is no task with this id.
+    std::equal_range().first alone would point at the next larger task instead. */
+template<typename Iterator>
+static Iterator findTaskById(Iterator begin, Iterator end, TaskId id)
+{
+    const auto range = std::equal_range(begin, end, Task(id, QString()), IdLessThan());
+    return range.first != range.second ? range.first : end;
+}
 
 void SmartNameCache::setAllTasks(const TaskList &taskList)
 {
@@ -49,8 +60,7 @@ void SmartNameCache::sortTasks()
 
 void SmartNameCache::modifyTask(const Task &task)
 {
-    const TaskList::Iterator it
-        = std::equal_range(m_tasks.begin(), m_tasks.end(), Task(task.id(), QString()), IdLessThan()).first;
+    const TaskList::Iterator it = findTaskById(m_tasks.begin(), m_tasks.end(), task.id());
     if (it != m_tasks.end())
         *it = task;
     sortTasks();
@@ -59,8 +69,7 @@ void SmartNameCache::modifyTask(const Task &task)
 
 void SmartNameCache::deleteTask(const Task &task)
 {
-    const auto it = std::equal_range(m_tasks.begin(), m_tasks.end(), Task(task.id(),
-                                                                     QString()), IdLessThan()).first;
+    const auto it = findTaskById(m_tasks.begin(), m_tasks.end(), task.id());
     if (it != m_tasks.end()) {
         m_tasks.erase(it);
         regenerateSmartNames();
@@ -75,8 +84,8 @@ void SmartNameCache::clearTasks()
 
 Task SmartNameCache::findTask(TaskId id) const
 {
-    const auto it = std::equal_range(m_tasks.constBegin(), m_tasks.constEnd(), Task(id, QString()), IdLessThan()).first;
-    if (it != m_tasks.end()) {
+    const auto it = findTaskById(m_tasks.constBegin(), m_tasks.constEnd(), id);
+    if (it != m_tasks.constEnd()) {
         return *it;
     } else {
         return Task();
