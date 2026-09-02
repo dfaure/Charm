@@ -24,6 +24,8 @@
 #include "TaskListMerger.h"
 #include "CharmExceptions.h"
 
+#include <algorithm>
+
 TaskListMerger::TaskListMerger()
 {
 }

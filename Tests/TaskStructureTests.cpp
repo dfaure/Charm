@@ -31,6 +31,8 @@
 #include <QtDebug>
 #include <QtTest/QtTest>
 
+#include <algorithm>
+
 TaskStructureTests::TaskStructureTests()
     : QObject()
 {

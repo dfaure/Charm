@@ -27,6 +27,8 @@
 #include "Core/Event.h"
 #include "Core/Task.h"
 
+#include <algorithm>
+
 static const int DAYS_IN_WEEK = 7;
 
 WeeklySummary::WeeklySummary()

@@ -36,6 +36,8 @@
 #include <QtAlgorithms>
 #include <QDebug>
 
+#include <algorithm>
+
 IdleDetector::IdleDetector(QObject *parent)
     : QObject(parent)
     , m_idlenessDuration(CharmIdleTime)   // from CharmCMake.h

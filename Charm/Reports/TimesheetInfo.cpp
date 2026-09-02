@@ -25,6 +25,8 @@
 
 #include "Core/CharmDataModel.h"
 
+#include <algorithm>
+
 TimeSheetInfo::TimeSheetInfo(int segments)
     : seconds(segments)
 {
