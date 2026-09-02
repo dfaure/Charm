@@ -40,14 +40,14 @@ public:
     Database();
     virtual ~Database();
 
-    void login() throw (TimesheetProcessorException);
-    void initializeDatabase() throw (TimesheetProcessorException);
+    void login();
+    void initializeDatabase();
     void addEvent(const Event &event, const SqlRaiiTransactor &);
     void deleteEventsForReport(int userid, int index);
-    void checkUserid(int id) throw (TimesheetProcessorException);
-    User getOrCreateUserByName(QString name) throw (TimesheetProcessorException);
-    Task getTask(int taskid) throw (TimesheetProcessorException);
-    TaskList getAllTasks() throw (TimesheetProcessorException);
+    void checkUserid(int id);
+    User getOrCreateUserByName(QString name);
+    Task getTask(int taskid);
+    TaskList getAllTasks();
 
     QSqlDatabase &database();
 

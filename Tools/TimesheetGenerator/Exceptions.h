@@ -36,11 +36,11 @@ public:
     {
     }
 
-    ~Exception() throw()
+    ~Exception() noexcept
     {
     }
 
-    const char *what() const throw()
+    const char *what() const noexcept
     {
         return qPrintable(mWhat);
     }

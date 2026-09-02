@@ -35,11 +35,11 @@ public:
     {
     }
 
-    ~TimesheetProcessorException() throw()
+    ~TimesheetProcessorException() noexcept
     {
     }
 
-    const char *what() const throw()
+    const char *what() const noexcept
     {
         return qPrintable(mWhat);
     }

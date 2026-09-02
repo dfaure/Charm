@@ -45,14 +45,14 @@ Database::~Database()
 {
 }
 
-void Database::checkUserid(int id) throw (TimesheetProcessorException)
+void Database::checkUserid(int id)
 {
     User user = m_storage.getUser(id);
     if (!user.isValid())
         throw TimesheetProcessorException(QStringLiteral("No such user"));
 }
 
-User Database::getOrCreateUserByName(QString name) throw (TimesheetProcessorException)
+User Database::getOrCreateUserByName(QString name)
 {
     User user;
     QSqlQuery query(database());
@@ -76,7 +76,7 @@ User Database::getOrCreateUserByName(QString name) throw (TimesheetProcessorExce
     return user;
 }
 
-Task Database::getTask(int taskid) throw (TimesheetProcessorException)
+Task Database::getTask(int taskid)
 {
     Task task = m_storage.getTask(taskid);
     if (!task.isValid())
@@ -84,7 +84,7 @@ Task Database::getTask(int taskid) throw (TimesheetProcessorException)
     return task;
 }
 
-TaskList Database::getAllTasks() throw(TimesheetProcessorException)
+TaskList Database::getAllTasks()
 {
     return m_storage.getAllTasks();
 }
@@ -94,7 +94,7 @@ QSqlDatabase &Database::database()
     return m_storage.database();
 }
 
-void Database::login() throw (TimesheetProcessorException)
+void Database::login()
 {
     MySqlStorage::Parameters parameters;
     try {
@@ -122,7 +122,7 @@ void Database::login() throw (TimesheetProcessorException)
     }
 }
 
-void Database::initializeDatabase() throw (TimesheetProcessorException)
+void Database::initializeDatabase()
 {
     try {
         QStringList tables = m_storage.database().tables();
