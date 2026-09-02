@@ -1,97 +1,77 @@
-#.rst:
-# ECMInstallIcons
-# ---------------
+# SPDX-FileCopyrightText: 2014 Alex Merry <alex.merry@kde.org>
+# SPDX-FileCopyrightText: 2013 David Edmundson <kde@davidedmundson.co.uk>
+# SPDX-FileCopyrightText: 2008 Chusslove Illich <caslav.ilic@gmx.net>
+# SPDX-FileCopyrightText: 2006 Alex Neundorf <neundorf@kde.org>
 #
-# Installs icons, sorting them into the correct directories according to the
-# FreeDesktop.org icon naming specification.
-#
-# ::
-#
-#   ecm_install_icons(ICONS <icon> [<icon> [...]]
-#                     DESTINATION <icon_install_dir>
-#                     [LANG <l10n_code>]
-#                     [THEME <theme>])
-#
-# The given icons, whose names must match the pattern::
-#
-#   <size>-<group>-<name>.<ext>
-#
-# will be installed to the appropriate subdirectory of DESTINATION according to
-# the FreeDesktop.org icon naming scheme. By default, they are installed to the
-# "hicolor" theme, but this can be changed using the THEME argument.  If the
-# icons are localized, the LANG argument can be used to install them in a
-# locale-specific directory.
-#
-# ``<size>`` is a numeric pixel size (typically 16, 22, 32, 48, 64, 128 or 256)
-# or ``sc`` for scalable (SVG) files, ``<group>`` is one of the standard
-# FreeDesktop.org icon groups (actions, animations, apps, categories, devices,
-# emblems, emotes, intl, mimetypes, places, status) and ``<ext>`` is one of
-# ``.png``, ``.mng`` or ``.svgz``.
-#
-# The typical installation directory is ``share/icons``.
-#
-# .. code-block:: cmake
-#
-#   ecm_install_icons(ICONS 22-actions-menu_new.png
-#                     DESTINATION share/icons)
-#
-# The above code will install the file ``22-actions-menu_new.png`` as
-# ``${CMAKE_INSTALL_PREFIX}/share/icons/<theme>/22x22/actions/menu_new.png``
-#
-# Users of the :kde-module:`KDEInstallDirs` module would normally use
-# ``${ICON_INSTALL_DIR}`` as the DESTINATION, while users of the GNUInstallDirs
-# module should use ``${CMAKE_INSTALL_DATAROOTDIR}/icons``.
-#
-# An old form of arguments will also be accepted::
-#
-#   ecm_install_icons(<icon_install_dir> [<l10n_code>])
-#
-# This matches files named like::
-#
-#   <theme><size>-<group>-<name>.<ext>
-#
-# where ``<theme>`` is one of
-# * ``hi`` for hicolor
-# * ``lo`` for locolor
-# * ``cr`` for the Crystal icon theme
-# * ``ox`` for the Oxygen icon theme
-# * ``br`` for the Breeze icon theme
-#
-# With this syntax, the file ``hi22-actions-menu_new.png`` would be installed
-# into ``<icon_install_dir>/hicolor/22x22/actions/menu_new.png``
-#
-# Since pre-1.0.0.
+# SPDX-License-Identifier: BSD-3-Clause
 
-#=============================================================================
-# Copyright 2014 Alex Merry <alex.merry@kde.org>
-# Copyright 2013 David Edmundson <kde@davidedmundson.co.uk>
-# Copyright 2008 Chusslove Illich <caslav.ilic@gmx.net>
-# Copyright 2006 Alex Neundorf <neundorf@kde.org>
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-#
-# 1. Redistributions of source code must retain the copyright
-#    notice, this list of conditions and the following disclaimer.
-# 2. Redistributions in binary form must reproduce the copyright
-#    notice, this list of conditions and the following disclaimer in the
-#    documentation and/or other materials provided with the distribution.
-# 3. The name of the author may not be used to endorse or promote products
-#    derived from this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-# IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-# OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-# IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-# NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-# THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#[=======================================================================[.rst:
+ECMInstallIcons
+---------------
 
-include(CMakeParseArguments)
+Installs icons, sorting them into the correct directories according to the
+FreeDesktop.org icon naming specification.
+
+::
+
+  ecm_install_icons(ICONS <icon> [<icon> [...]]
+                    DESTINATION <icon_install_dir>
+                    [LANG <l10n_code>]
+                    [THEME <theme>])
+
+The given icons, whose names must match the pattern::
+
+  <size>-<group>-<name>.<ext>
+
+will be installed to the appropriate subdirectory of ``DESTINATION`` according to
+the FreeDesktop.org icon naming scheme. By default, they are installed to the
+"hicolor" theme, but this can be changed using the ``THEME`` argument.  If the
+icons are localized, the LANG argument can be used to install them in a
+locale-specific directory.
+
+``<size>`` is a numeric pixel size (typically 16, 22, 32, 48, 64, 128 or 256)
+or ``sc`` for scalable (SVG) files, ``<group>`` is one of the standard
+FreeDesktop.org icon groups (actions, animations, apps, categories, devices,
+emblems, emotes, intl, mimetypes, places, status) and ``<ext>`` is one of
+``.png``, ``.mng`` or ``.svgz``.
+
+The typical installation directory is ``share/icons``.
+
+.. code-block:: cmake
+
+  ecm_install_icons(ICONS 22-actions-menu_new.png
+                    DESTINATION share/icons)
+
+The above code will install the file ``22-actions-menu_new.png`` as
+``${CMAKE_INSTALL_PREFIX}/share/icons/<theme>/22x22/actions/menu_new.png``
+
+Users of the :kde-module:`KDEInstallDirs` module would normally use
+``${KDE_INSTALL_ICONDIR}`` as the DESTINATION, while users of the GNUInstallDirs
+module should use ``${CMAKE_INSTALL_DATAROOTDIR}/icons``.
+
+An old form of arguments will also be accepted::
+
+  ecm_install_icons(<icon_install_dir> [<l10n_code>])
+
+This matches files named like::
+
+  <theme><size>-<group>-<name>.<ext>
+
+where ``<theme>`` is one of
+
+* ``hi`` for hicolor
+* ``lo`` for locolor
+* ``cr`` for the Crystal icon theme
+* ``ox`` for the Oxygen icon theme
+* ``br`` for the Breeze icon theme
+
+With this syntax, the file ``hi22-actions-menu_new.png`` would be installed
+into ``<icon_install_dir>/hicolor/22x22/actions/menu_new.png``
+
+Since pre-1.0.0.
+#]=======================================================================]
+
+cmake_policy(VERSION 3.16)
 
 # A "map" of short type names to the directories.
 # Unknown names produce a warning.
