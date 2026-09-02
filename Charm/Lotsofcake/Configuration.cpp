@@ -63,9 +63,14 @@ void Lotsofcake::Configuration::importFromTaskExport(const TaskExport &exporter)
 
 QString Lotsofcake::Configuration::username() const
 {
+    // The KDAB timesheet server is of no use outside KDAB, and an empty user
+    // name makes isConfigured() false, which switches the whole feature off.
+    return QString();
+    /*
     QSettings settings;
     settings.beginGroup(QLatin1String(s_group));
     return settings.value(QLatin1String(s_keyUsername)).toString();
+    */
 }
 
 QUrl Lotsofcake::Configuration::timesheetUploadUrl() const
