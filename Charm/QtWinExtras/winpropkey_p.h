@@ -52,6 +52,9 @@
 //
 
 #include <QtCore/qglobal.h>
+// shobjidl.h first: propkey.h needs PROPERTYKEY, which windows.h leaves out
+// when WIN32_LEAN_AND_MEAN is defined, as it is here but was not in Qt's build.
+#include <shobjidl.h>
 #include <propkey.h>
 
 QT_BEGIN_NAMESPACE
