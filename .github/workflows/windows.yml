@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Qt 5.15 / MSVC x64
+    name: Qt 6.8 / MSVC x64
     runs-on: windows-2022
 
     env:
@@ -26,8 +26,8 @@ jobs:
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
-          version: '5.15.2'
-          arch: win64_msvc2019_64
+          version: '6.8.3'
+          arch: win64_msvc2022_64
           cache: true
 
       - name: Set up MSVC environment
@@ -40,7 +40,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{ env.QTKEYCHAIN_PREFIX }}
-          key: qtkeychain-${{ env.QTKEYCHAIN_TAG }}-qt5.15.2-msvc-x64
+          key: qtkeychain-${{ env.QTKEYCHAIN_TAG }}-qt6.8.3-msvc-x64
 
       - name: Build QtKeychain
         if: steps.cache-qtkeychain.outputs.cache-hit != 'true'
@@ -48,7 +48,7 @@ jobs:
           git clone --depth 1 --branch $env:QTKEYCHAIN_TAG https://github.com/frankosterfeld/qtkeychain.git
           cmake -S qtkeychain -B qtkeychain/build -G Ninja `
             -DCMAKE_BUILD_TYPE=Release `
-            -DBUILD_WITH_QT6=OFF `
+            -DBUILD_WITH_QT6=ON `
             -DBUILD_TEST_APPLICATION=OFF `
             -DBUILD_TRANSLATIONS=OFF `
             -DCMAKE_INSTALL_PREFIX="$env:QTKEYCHAIN_PREFIX"
@@ -74,12 +74,12 @@ jobs:
           $dist = "dist/Charm"
           New-Item -ItemType Directory -Force -Path $dist | Out-Null
           Copy-Item build-ci/bin/Charm.exe $dist
-          # windeployqt reads Charm.exe's imports, takes the qt5 prefix of
-          # qt5keychain.dll for a Qt module, and looks for it only in the Qt
+          # windeployqt reads Charm.exe's imports, takes the qt6 prefix of
+          # qt6keychain.dll for a Qt module, and looks for it only in the Qt
           # directory, so put a copy there too
-          Copy-Item "$env:QTKEYCHAIN_PREFIX/bin/qt5keychain.dll" "$env:QT_ROOT_DIR/bin"
+          Copy-Item "$env:QTKEYCHAIN_PREFIX/bin/qt6keychain.dll" "$env:QT_ROOT_DIR/bin"
           windeployqt --release "$dist/Charm.exe"
-          Copy-Item "$env:QTKEYCHAIN_PREFIX/bin/qt5keychain.dll" $dist -Force
+          Copy-Item "$env:QTKEYCHAIN_PREFIX/bin/qt6keychain.dll" $dist -Force
 
       - uses: actions/upload-artifact@v4
         with:
