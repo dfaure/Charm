@@ -43,6 +43,7 @@ class ReportConfigurationDialog;
 class WeeklyTimesheetConfigurationDialog;
 class MonthlyTimesheetConfigurationDialog;
 class ActivityReportConfigurationDialog;
+class QLabel;
 
 class TimeTrackingWindow : public CharmWindow, public CharmDataModelAdapterInterface
 {
@@ -131,6 +132,7 @@ private:
     void importTasksFromDeviceOrFile(QIODevice *device, const QString &filename,
                                      bool verbose = true);
     void startCheckForUpdates(VerboseMode mode = Silent);
+    void updateOvertimeLabel();
     void informUserAboutNewRelease(const QString &releaseVersion, const QUrl &link,
                                    const QString &releaseInfoLink);
     void handleIdleEvents(IdleDetector *detector, bool restart);
@@ -139,6 +141,7 @@ private:
     MonthlyTimesheetConfigurationDialog *m_monthlyTimesheetDialog = nullptr;
     ActivityReportConfigurationDialog *m_activityReportDialog = nullptr;
     TimeTrackingView *m_summaryWidget;
+    QLabel *m_overtimeLabel;
     QVector<WeeklySummary> m_summaries;
     QTimer m_checkUploadedSheetsTimer;
     QTimer m_checkCharmReleaseVersionTimer;

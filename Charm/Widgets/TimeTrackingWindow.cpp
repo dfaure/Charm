@@ -47,6 +47,7 @@
 #include "Commands/CommandModifyEvent.h"
 #include "Commands/CommandSetAllTasks.h"
 
+#include "Core/OvertimeCounter.h"
 #include "Core/TaskListMerger.h"
 #include "Core/TimeSpans.h"
 #include "Core/XmlSerialization.h"
@@ -68,10 +69,12 @@
 #include <QFileInfo>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QLabel>
 #include <QMenuBar>
 #include <QMessageBox>
 #include <QSettings>
 #include <QToolBar>
+#include <QVBoxLayout>
 #include <QUrlQuery>
 #include <QtAlgorithms>
 
@@ -80,12 +83,22 @@
 TimeTrackingWindow::TimeTrackingWindow(QWidget *parent)
     : CharmWindow(tr("Time Tracker"), parent)
     , m_summaryWidget(new TimeTrackingView(this))
+    , m_overtimeLabel(new QLabel(this))
     , m_billDialog(nullptr)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     setWindowNumber(3);
     setWindowIdentifier(QStringLiteral("window_tracking"));
-    setCentralWidget(m_summaryWidget);
+    auto *central = new QWidget(this);
+    auto *layout = new QVBoxLayout(central);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
+    m_overtimeLabel->setAlignment(Qt::AlignCenter);
+    m_overtimeLabel->setContentsMargins(4, 2, 4, 2);
+    m_overtimeLabel->hide();
+    layout->addWidget(m_overtimeLabel);
+    layout->addWidget(m_summaryWidget);
+    setCentralWidget(central);
     connect(m_summaryWidget, &TimeTrackingView::startEvent,
             this, &TimeTrackingWindow::slotStartEvent);
     connect(m_summaryWidget, &TimeTrackingView::stopEvents,
@@ -253,6 +266,7 @@ void TimeTrackingWindow::configurationChanged()
         m_checkUploadedSheetsTimer.stop();
     }
     m_summaryWidget->configurationChanged();
+    updateOvertimeLabel();
     CharmWindow::configurationChanged();
 }
 
@@ -264,6 +278,37 @@ void TimeTrackingWindow::slotSelectTasksToShow()
     // and update the widget:
     m_summaries = WeeklySummary::summariesForTimespan(DATAMODEL, thisWeek.timespan);
     m_summaryWidget->setSummaries(m_summaries);
+    updateOvertimeLabel();
+}
+
+void TimeTrackingWindow::updateOvertimeLabel()
+{
+    const OvertimeResult result = computeOvertime(DATAMODEL, CONFIGURATION.workTimeContract,
+                                                  QDate::currentDate());
+    if (!result.valid) {
+        if (!m_overtimeLabel->isHidden()) {
+            m_overtimeLabel->hide();
+            updateGeometry();
+        }
+        return;
+    }
+
+    // hoursAndMinutes() cannot format a negative duration, so handle the sign here
+    const int balance = result.balanceSeconds();
+    const QString sign = balance < 0 ? QStringLiteral("-") : QStringLiteral("+");
+    m_overtimeLabel->setText(tr("Overtime: %1%2").arg(sign, hoursAndMinutes(qAbs(balance))));
+    m_overtimeLabel->setToolTip(tr("Tracked %1 instead of the expected %2, "
+                                   "from %3 to %4 (full weeks only).\n"
+                                   "Vacation and sick leave only count if they are tracked as events.")
+                                .arg(hoursAndMinutes(result.trackedSeconds),
+                                     hoursAndMinutes(result.expectedSeconds),
+                                     QLocale().toString(result.periodStart, QLocale::ShortFormat),
+                                     QLocale().toString(result.periodEndExclusive.addDays(-1),
+                                                        QLocale::ShortFormat)));
+    if (m_overtimeLabel->isHidden()) {
+        m_overtimeLabel->show();
+        updateGeometry();
+    }
 }
 
 void TimeTrackingWindow::insertEditMenu()
@@ -312,6 +357,7 @@ void TimeTrackingWindow::slotEditPreferences(bool)
         CONFIGURATION.requestEventComment = dialog.requestEventComment();
         CONFIGURATION.enableCommandInterface = dialog.enableCommandInterface();
         CONFIGURATION.numberOfTaskSelectorEntries = dialog.numberOfTaskSelectorEntries();
+        CONFIGURATION.workTimeContract = dialog.workTimeContract();
         emit saveConfiguration();
     }
 }

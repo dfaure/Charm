@@ -76,6 +76,7 @@ extern const QString MetaKey_Key_ToolButtonStyle;
 extern const QString MetaKey_Key_ShowStatusBar;
 extern const QString MetaKey_Key_EnableCommandInterface;
 extern const QString MetaKey_Key_NumberOfTaskSelectorEntries;
+extern const QString MetaKey_Key_WorkTimeContract;
 
 extern const QString TrueString;
 extern const QString FalseString;
@@ -102,6 +103,11 @@ template<> inline bool strToT(const QString &str)
 template<> inline QColor strToT(const QString &str)
 {
     return QColor(str);
+}
+
+template<> inline WorkTimeContract strToT(const QString &str)
+{
+    return WorkTimeContract::fromString(str);
 }
 
 #define INT_CONFIG_TYPE(TYPE) \

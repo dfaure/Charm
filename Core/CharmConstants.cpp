@@ -70,6 +70,7 @@ const QString MetaKey_Key_ToolButtonStyle = QStringLiteral("ToolButtonStyle");
 const QString MetaKey_Key_ShowStatusBar = QStringLiteral("ShowStatusBar");
 const QString MetaKey_Key_EnableCommandInterface = QStringLiteral("EnableCommandInterface");
 const QString MetaKey_Key_NumberOfTaskSelectorEntries = QStringLiteral("NumberOfTaskSelectorEntries");
+const QString MetaKey_Key_WorkTimeContract = QStringLiteral("WorkTimeContract");
 
 const QString TrueString(QStringLiteral("true"));
 const QString FalseString(QStringLiteral("false"));

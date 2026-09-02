@@ -29,6 +29,7 @@
 #include <QObject>
 
 #include "User.h"
+#include "WorkTimeContract.h"
 
 class QSettings;
 
@@ -84,6 +85,8 @@ public:
     bool requestEventComment = false;
     bool enableCommandInterface = false;
     int numberOfTaskSelectorEntries = 5;
+    // empty means the overtime counter is off
+    WorkTimeContract workTimeContract;
 
     // these are stored in QSettings, since we need this information to locate and open the database:
     QString configurationName;
@@ -107,7 +110,8 @@ private:
                   DurationFormat durationFormat, bool detectIdling, Qt::ToolButtonStyle buttonstyle,
                   bool showStatusBar, bool warnUnuploadedTimesheets, bool _requestEventComment,
                   bool enableCommandInterface, int _numberOfTaskSelectorEntries,
-                  const QColor &timeTrackerBackgroundColor);
+                  const QColor &timeTrackerBackgroundColor,
+                  const WorkTimeContract &workTimeContract);
     Configuration();
 };
 

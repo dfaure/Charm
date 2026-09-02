@@ -53,7 +53,8 @@ Configuration::Configuration(TaskPrefilteringMode _taskPrefilteringMode,
                              Qt::ToolButtonStyle _buttonstyle, bool _showStatusBar,
                              bool _warnUnuploadedTimesheets, bool _requestEventComment,
                              bool _enableCommandInterface, int _numberOfTaskSelectorEntries,
-                             const QColor &_timeTrackerBackgroundColor)
+                             const QColor &_timeTrackerBackgroundColor,
+                             const WorkTimeContract &_workTimeContract)
     : taskPrefilteringMode(_taskPrefilteringMode)
     , timeTrackerFontSize(_timeTrackerFontSize)
     , durationFormat(_durationFormat)
@@ -65,6 +66,7 @@ Configuration::Configuration(TaskPrefilteringMode _taskPrefilteringMode,
     , requestEventComment(_requestEventComment)
     , enableCommandInterface(_enableCommandInterface)
     , numberOfTaskSelectorEntries(_numberOfTaskSelectorEntries)
+    , workTimeContract(_workTimeContract)
     , configurationName(DEFAULT_CONFIG_GROUP)
 {
 }
@@ -85,7 +87,8 @@ bool Configuration::operator==(const Configuration &other) const
            && installationId == other.installationId
            && localStorageType == other.localStorageType
            && localStorageDatabase == other.localStorageDatabase
-           && numberOfTaskSelectorEntries == other.numberOfTaskSelectorEntries;
+           && numberOfTaskSelectorEntries == other.numberOfTaskSelectorEntries
+           && workTimeContract == other.workTimeContract;
 }
 
 void Configuration::writeTo(QSettings &settings)
@@ -156,7 +159,8 @@ void Configuration::dump(const QString &why)
              << "--> warnUnuploadedTimesheets: " << warnUnuploadedTimesheets << Qt::endl
              << "--> requestEventComment:      " << requestEventComment << Qt::endl
              << "--> enableCommandInterface:   " << enableCommandInterface
-             << "--> numberOfTaskSelectorEntries: " << numberOfTaskSelectorEntries;
+             << "--> numberOfTaskSelectorEntries: " << numberOfTaskSelectorEntries << Qt::endl
+             << "--> workTimeContract:         " << workTimeContract.toString();
 }
 
 quint32 Configuration::createInstallationId() const

@@ -8,6 +8,8 @@ SET(
     CharmExceptions.cpp
     Controller.cpp
     Dates.cpp
+    OvertimeCounter.cpp
+    WorkTimeContract.cpp
     SqlRaiiTransactor.cpp
     SqLiteStorage.cpp
     MySqlStorage.cpp

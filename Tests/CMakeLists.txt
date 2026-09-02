@@ -37,6 +37,11 @@ SET( DatesTests_SRCS DatesTests.cpp )
 ADD_EXECUTABLE( DatesTests ${DatesTests_SRCS} )
 TARGET_LINK_LIBRARIES( DatesTests ${TEST_LIBRARIES} )
 
+SET( WorkTimeContractTests_SRCS WorkTimeContractTests.cpp )
+ADD_EXECUTABLE( WorkTimeContractTests ${WorkTimeContractTests_SRCS} )
+TARGET_LINK_LIBRARIES( WorkTimeContractTests ${TEST_LIBRARIES} )
+ADD_TEST( NAME WorkTimeContractTests COMMAND WorkTimeContractTests )
+
 SET( SmartNameCacheTests_SRCS SmartNameCacheTests.cpp )
 ADD_EXECUTABLE( SmartNameCacheTests ${SmartNameCacheTests_SRCS} )
 TARGET_LINK_LIBRARIES( SmartNameCacheTests ${TEST_LIBRARIES} )

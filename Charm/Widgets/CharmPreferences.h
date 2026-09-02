@@ -43,6 +43,8 @@ public:
     bool requestEventComment() const;
     bool enableCommandInterface() const;
     int numberOfTaskSelectorEntries() const;
+    /** An empty contract means the overtime counter is off. */
+    WorkTimeContract workTimeContract() const;
 
     Qt::ToolButtonStyle toolButtonStyle() const;
 
@@ -51,6 +53,8 @@ public:
     QColor timeTrackerBackgroundColor() const;
 private Q_SLOTS:
     void slotWarnUnuploadedChanged(bool);
+    void slotOvertimeCounterToggled(bool);
+    void slotContractStartDateChanged(const QDate &date);
     void slotChooseTimeTrackerBackgroundColor();
     void slotResetTimeTrackerBackgroundColor();
 

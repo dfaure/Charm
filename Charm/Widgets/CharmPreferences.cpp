@@ -27,6 +27,7 @@
 #include "MessageBox.h"
 
 #include "Core/Configuration.h"
+#include "Core/Dates.h"
 #include "Idle/IdleDetector.h"
 #include "Lotsofcake/Configuration.h"
 
@@ -37,6 +38,7 @@
 #include <QInputDialog>
 #include <QPixmap>
 #include <QPushButton>
+#include <QSignalBlocker>
 
 CharmPreferences::CharmPreferences(const Configuration &config, QWidget *parent_)
     : QDialog(parent_)
@@ -61,6 +63,10 @@ CharmPreferences::CharmPreferences(const Configuration &config, QWidget *parent_
 
     connect(m_ui.cbWarnUnuploadedTimesheets, &QCheckBox::toggled,
             this, &CharmPreferences::slotWarnUnuploadedChanged);
+    connect(m_ui.cbEnableOvertimeCounter, &QCheckBox::toggled,
+            this, &CharmPreferences::slotOvertimeCounterToggled);
+    connect(m_ui.deContractStartDate, &QDateEdit::dateChanged,
+            this, &CharmPreferences::slotContractStartDateChanged);
     connect(m_ui.pbTimeTrackerBackgroundColor, &QPushButton::clicked,
             this, &CharmPreferences::slotChooseTimeTrackerBackgroundColor);
     connect(m_ui.pbResetTimeTrackerBackgroundColor, &QPushButton::clicked,
@@ -111,6 +117,18 @@ CharmPreferences::CharmPreferences(const Configuration &config, QWidget *parent_
 
     m_ui.sbNumberOfTaskSelectorEntries->setValue(config.numberOfTaskSelectorEntries);
 
+    const WorkTimeContract &contract = config.workTimeContract;
+    const bool trackOvertime = !contract.isEmpty();
+    m_ui.cbEnableOvertimeCounter->setChecked(trackOvertime);
+    if (trackOvertime) {
+        m_ui.sbHoursPerWeek->setValue(contract.periods.first().hoursPerWeek);
+        m_ui.deContractStartDate->setDate(contract.startDate());
+    } else {
+        m_ui.deContractStartDate->setDate(Charm::weekDayInWeekOf(Qt::Monday,
+                                                                 QDate::currentDate()));
+    }
+    slotOvertimeCounterToggled(trackOvertime);
+
     // resize( minimumSize() );
 }
 
@@ -141,6 +159,32 @@ bool CharmPreferences::enableCommandInterface() const
 int CharmPreferences::numberOfTaskSelectorEntries() const
 {
     return m_ui.sbNumberOfTaskSelectorEntries->value();
+}
+
+WorkTimeContract CharmPreferences::workTimeContract() const
+{
+    WorkTimeContract contract;
+    if (m_ui.cbEnableOvertimeCounter->isChecked())
+        contract.periods << ContractPeriod { m_ui.deContractStartDate->date(),
+                                             m_ui.sbHoursPerWeek->value() };
+    return contract;
+}
+
+void CharmPreferences::slotOvertimeCounterToggled(bool enabled)
+{
+    m_ui.lbHoursPerWeek->setEnabled(enabled);
+    m_ui.sbHoursPerWeek->setEnabled(enabled);
+    m_ui.lbContractStartDate->setEnabled(enabled);
+    m_ui.deContractStartDate->setEnabled(enabled);
+}
+
+void CharmPreferences::slotContractStartDateChanged(const QDate &date)
+{
+    const QDate monday = Charm::weekDayInWeekOf(Qt::Monday, date);
+    if (monday == date)
+        return;
+    QSignalBlocker blocker(m_ui.deContractStartDate);
+    m_ui.deContractStartDate->setDate(monday);
 }
 
 Configuration::DurationFormat CharmPreferences::durationFormat() const

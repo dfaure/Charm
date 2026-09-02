@@ -240,7 +240,9 @@ void Controller::persistMetaData(Configuration &configuration)
         { MetaKey_Key_EnableCommandInterface,
           stringForBool(configuration.enableCommandInterface) },
         { MetaKey_Key_NumberOfTaskSelectorEntries,
-          QString::number(configuration.numberOfTaskSelectorEntries) }
+          QString::number(configuration.numberOfTaskSelectorEntries) },
+        { MetaKey_Key_WorkTimeContract,
+          configuration.workTimeContract.toString() }
     };
     int NumberOfSettings = sizeof settings / sizeof settings[0];
 
@@ -279,6 +281,7 @@ void Controller::provideMetaData(Configuration &configuration)
     loadConfigValue(MetaKey_Key_EnableCommandInterface, configuration.enableCommandInterface);
     loadConfigValue(MetaKey_Key_NumberOfTaskSelectorEntries, configuration.numberOfTaskSelectorEntries);
     configuration.numberOfTaskSelectorEntries = qMax(0, configuration.numberOfTaskSelectorEntries);
+    loadConfigValue(MetaKey_Key_WorkTimeContract, configuration.workTimeContract);
 
     CONFIGURATION.dump();
 }
