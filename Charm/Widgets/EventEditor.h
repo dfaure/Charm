@@ -62,7 +62,16 @@ private Q_SLOTS:
 
 private:
     void updateEndTime();
-    void updateValues(bool all = false);
+
+    enum UpdateFlag {
+        UpdateControls = 0, // always updated
+        UpdateEndDate = 1,
+        UpdateDateTime = 2 | UpdateEndDate,
+        UpdateDuration = 4,
+        UpdateComment = 8,
+        UpdateAll = UpdateDateTime | UpdateDuration | UpdateComment
+    };
+    void updateValues(int updateFlag = UpdateControls);
 
     QScopedPointer<Ui::EventEditor> m_ui;
     Event m_event;
