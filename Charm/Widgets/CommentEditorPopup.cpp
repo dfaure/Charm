@@ -37,7 +37,7 @@ CommentEditorPopup::CommentEditorPopup(QWidget *parent)
 {
     ui->setupUi(this);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setShortcut(QKeySequence(Qt::CTRL
-                                                                          + Qt::Key_Return));
+                                                                          | Qt::Key_Return));
     ui->textEdit->setFocus(Qt::TabFocusReason);
 }
 

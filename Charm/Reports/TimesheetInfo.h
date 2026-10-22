@@ -46,7 +46,7 @@ public:
 public:
     static TimeSheetInfoList taskWithSubTasks(const CharmDataModel *dataModel, int segments,
                                               TaskId id, const SecondsMap &secondsMap,
-                                              TimeSheetInfo *addTo = 0);
+                                              TimeSheetInfo *addTo = nullptr);
     static TimeSheetInfoList filteredTaskWithSubTasks(TimeSheetInfoList timeSheetInfo,
                                                       bool activeTasksOnly);
 

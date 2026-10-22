@@ -120,7 +120,7 @@ EventView::EventView(QWidget *parent)
     m_toolBar->addAction(&m_actionNewEvent);
 
     m_actionEditEvent.setText(tr("Edit Event..."));
-    m_actionEditEvent.setShortcut(Qt::CTRL + Qt::Key_E);
+    m_actionEditEvent.setShortcut(Qt::CTRL | Qt::Key_E);
     m_actionEditEvent.setIcon(Data::editEventIcon());
     m_toolBar->addAction(&m_actionEditEvent);
 

@@ -48,7 +48,7 @@ EventEditor::EventEditor(const Event &event, QWidget *parent)
     m_ui->dateEditStart->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
 
     // Ctrl+Return for OK
-    m_ui->buttonBox->button(QDialogButtonBox::Ok)->setShortcut(Qt::CTRL + Qt::Key_Return);
+    m_ui->buttonBox->button(QDialogButtonBox::Ok)->setShortcut(Qt::CTRL | Qt::Key_Return);
 
     // connect stuff:
     connect(m_ui->spinBoxHours, SIGNAL(valueChanged(int)),

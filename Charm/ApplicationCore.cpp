@@ -153,7 +153,7 @@ ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *
                  << m_uniqueApplicationServer.errorString();
 
     Q_INIT_RESOURCE(CharmResources);
-    Q_ASSERT_X(m_instance == 0, "Application ctor",
+    Q_ASSERT_X(m_instance == nullptr, "Application ctor",
                "Application is a singleton and cannot be created more than once");
     m_instance = this;
     qRegisterMetaType<State>("State");
@@ -212,7 +212,7 @@ ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *
     QApplication::setWindowIcon(Data::charmIcon());
 
     // set up actions:
-    m_actionQuit.setShortcut(Qt::CTRL + Qt::Key_Q);
+    m_actionQuit.setShortcut(Qt::CTRL | Qt::Key_Q);
     m_actionQuit.setText(tr("Quit"));
     m_actionQuit.setIcon(Data::quitCharmIcon());
     connect(&m_actionQuit, &QAction::triggered,
@@ -257,15 +257,15 @@ ApplicationCore::ApplicationCore(TaskId startupTask, bool hideAtStart, QObject *
     connect(&m_actionEnterVacation, &QAction::triggered,
             &m_timeTracker, &TimeTrackingWindow::slotEnterVacation);
     m_actionActivityReport.setText(tr("Activity Report..."));
-    m_actionActivityReport.setShortcut(Qt::CTRL + Qt::Key_A);
+    m_actionActivityReport.setShortcut(Qt::CTRL | Qt::Key_A);
     connect(&m_actionActivityReport, &QAction::triggered,
             &m_timeTracker, &TimeTrackingWindow::slotActivityReport);
     m_actionWeeklyTimesheetReport.setText(tr("Weekly Timesheet..."));
-    m_actionWeeklyTimesheetReport.setShortcut(Qt::CTRL + Qt::Key_R);
+    m_actionWeeklyTimesheetReport.setShortcut(Qt::CTRL | Qt::Key_R);
     connect(&m_actionWeeklyTimesheetReport, &QAction::triggered,
             &m_timeTracker, &TimeTrackingWindow::slotWeeklyTimesheetReport);
     m_actionMonthlyTimesheetReport.setText(tr("Monthly Timesheet..."));
-    m_actionMonthlyTimesheetReport.setShortcut(Qt::CTRL + Qt::Key_M);
+    m_actionMonthlyTimesheetReport.setShortcut(Qt::CTRL | Qt::Key_M);
     connect(&m_actionMonthlyTimesheetReport, &QAction::triggered,
             &m_timeTracker, &TimeTrackingWindow::slotMonthlyTimesheetReport);
 
@@ -305,7 +305,7 @@ void ApplicationCore::slotPopulateTrayIconMenu()
         return;
     for (const auto action : m_taskActions) {
         m_systrayContextMenu.removeAction(action);
-        if (action->associatedWidgets().isEmpty())
+        if (action->associatedObjects().isEmpty())
             delete action;
     }
     m_taskActions = newActions;

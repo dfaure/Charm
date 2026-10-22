@@ -87,14 +87,14 @@ TasksView::TasksView(QWidget *parent)
             this, &TasksView::actionNewTask);
 
     m_actionNewSubTask.setText(tr("New &Subtask"));
-    m_actionNewSubTask.setShortcut(Qt::META + Qt::Key_N);
+    m_actionNewSubTask.setShortcut(Qt::META | Qt::Key_N);
     m_actionNewSubTask.setIcon(Data::newSubtaskIcon());
     m_toolBar->addAction(&m_actionNewSubTask);
     connect(&m_actionNewSubTask, &QAction::triggered,
             this, &TasksView::actionNewSubTask);
 
     m_actionEditTask.setText(tr("Edit Task"));
-    m_actionEditTask.setShortcut(Qt::CTRL + Qt::Key_E);
+    m_actionEditTask.setShortcut(Qt::CTRL | Qt::Key_E);
     m_actionEditTask.setIcon(Data::editTaskIcon());
     m_toolBar->addAction(&m_actionEditTask);
     connect(&m_actionEditTask, &QAction::triggered,

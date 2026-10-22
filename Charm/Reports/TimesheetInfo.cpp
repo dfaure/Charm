@@ -75,7 +75,7 @@ TimeSheetInfoList TimeSheetInfo::taskWithSubTasks(const CharmDataModel *dataMode
         myInformation.taskId = item.task().id();
         myInformation.taskName = item.task().name();
 
-        if (addTo != 0)
+        if (addTo != nullptr)
             myInformation.indentation = addTo->indentation + 1;
         myInformation.taskId = id;
     } else {
@@ -90,7 +90,7 @@ TimeSheetInfoList TimeSheetInfo::taskWithSubTasks(const CharmDataModel *dataMode
         children << taskWithSubTasks(dataModel, segments, i, secondsMap, &myInformation);
 
     // add to parent:
-    if (addTo != 0) {
+    if (addTo != nullptr) {
         for (int i = 0; i < segments; ++i)
             addTo->seconds[i] += myInformation.seconds[i];
         addTo->aggregated = true;

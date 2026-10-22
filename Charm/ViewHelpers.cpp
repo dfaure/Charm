@@ -77,7 +77,7 @@ public:
         const Event &right = DATAMODEL->eventForId(rightId);
         int result = -1;
 
-        foreach (const auto order, m_orders) {
+        for (const auto order : m_orders) {
             switch (order) {
             case Charm::SortOrder::None:
                 Q_UNREACHABLE();
