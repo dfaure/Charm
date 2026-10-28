@@ -66,6 +66,7 @@ private:
 
 public:
     explicit TimeTrackingView(QWidget *parent = nullptr);
+    bool event(QEvent *) override;
     void paintEvent(QPaintEvent *) override;
     void resizeEvent(QResizeEvent *) override;
     void mousePressEvent(QMouseEvent *event) override;

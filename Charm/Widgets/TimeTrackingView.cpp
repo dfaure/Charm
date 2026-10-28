@@ -29,6 +29,7 @@
 #include "Core/Configuration.h"
 
 #include <QFont>
+#include <QEvent>
 #include <QFontMetrics>
 #include <QMessageBox>
 #include <QPaintEvent>
@@ -370,6 +371,22 @@ void TimeTrackingView::setSummaries(const QVector<WeeklySummary> &summaries)
 bool TimeTrackingView::isTracking() const
 {
     return DATAMODEL->activeEventCount() > 0;
+}
+
+bool TimeTrackingView::event(QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::EnabledChange:
+    case QEvent::WindowActivate:
+    case QEvent::WindowDeactivate:
+    case QEvent::PaletteChange:
+        m_paintAttributes.initialize(palette(), CONFIGURATION.timeTrackerBackgroundColor);
+        update();
+        break;
+    default:
+        break;
+    }
+    return QWidget::event(event);
 }
 
 void TimeTrackingView::configurationChanged()
