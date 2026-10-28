@@ -51,6 +51,7 @@ const QString MetaKey_ExportToXmlRecentSavePath = QStringLiteral("ExportToXmlSav
 const QString MetaKey_TimesheetSubscribedOnly = QStringLiteral("TimesheetSubscribedOnly");
 const QString MetaKey_TimesheetActiveOnly = QStringLiteral("TimesheetActiveOnly");
 const QString MetaKey_TimesheetRootTask = QStringLiteral("TimesheetRootTask");
+const QString MetaKey_MonthlyReportWorkLog = QStringLiteral("MonthlyReportWorkLog");
 const QString MetaKey_LastEventEditorDateTime = QStringLiteral("LastEventEditorDateTime");
 const QString MetaKey_Key_InstallationId = QStringLiteral("InstallationId");
 const QString MetaKey_Key_UserName = QStringLiteral("UserName");

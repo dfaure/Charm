@@ -68,6 +68,7 @@ SET(
     Widgets/TrayIcon.cpp
     Widgets/Timesheet.cpp
     Widgets/WeeklyTimesheet.cpp
+    Widgets/WorkLogReport.cpp
     Widgets/NotificationPopup.cpp
     Widgets/FindAndReplaceEventsDialog.cpp
     Widgets/WidgetUtils.cpp

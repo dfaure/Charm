@@ -51,7 +51,7 @@ public Q_SLOTS:
     void accept() override;
 
 private Q_SLOTS:
-    void slotCheckboxSubtasksOnlyChecked(bool);
+    void slotSubtasksToggled(bool);
     void slotStandardTimeSpansChanged();
     void slotMonthComboItemSelected(int);
     void slotSelectTask();
@@ -59,7 +59,7 @@ private Q_SLOTS:
 private:
     QScopedPointer<Ui::MonthlyTimesheetConfigurationDialog> m_ui;
     QList<NamedTimeSpan> m_monthInfo;
-    TaskId m_rootTask;
+    TaskId m_rootTask = {};
 };
 
 #endif

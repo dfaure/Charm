@@ -25,13 +25,13 @@
 
 #include <QSettings>
 
-#include "DateEntrySyncer.h"
 #include "SelectTaskDialog.h"
 #include "ViewHelpers.h"
 
 #include "CharmCMake.h"
 
 #include "MonthlyTimesheet.h"
+#include "WorkLogReport.h"
 
 #include "ui_MonthlyTimesheetConfigurationDialog.h"
 
@@ -47,22 +47,20 @@ MonthlyTimesheetConfigurationDialog::MonthlyTimesheetConfigurationDialog(QWidget
     connect(m_ui->buttonBox, &QDialogButtonBox::rejected,
             this, &MonthlyTimesheetConfigurationDialog::reject);
 
-    connect(m_ui->comboBoxMonth, SIGNAL(currentIndexChanged(int)),
-            SLOT(slotMonthComboItemSelected(int)));
-    connect(m_ui->toolButtonSelectTask, &QToolButton::clicked,
+    connect(m_ui->comboBoxMonth, &QComboBox::currentIndexChanged,
+            this, &MonthlyTimesheetConfigurationDialog::slotMonthComboItemSelected);
+    connect(m_ui->pushButtonChooseTask, &QPushButton::clicked,
             this, &MonthlyTimesheetConfigurationDialog::slotSelectTask);
-    connect(m_ui->checkBoxSubTasksOnly, &QCheckBox::toggled,
-            this, &MonthlyTimesheetConfigurationDialog::slotCheckboxSubtasksOnlyChecked);
-    m_ui->comboBoxMonth->setCurrentIndex(1);
-    slotCheckboxSubtasksOnlyChecked(m_ui->checkBoxSubTasksOnly->isChecked());
+    connect(m_ui->radioButtonSubtasks, &QRadioButton::toggled,
+            this, &MonthlyTimesheetConfigurationDialog::slotSubtasksToggled);
+
+    const QLocale locale;
+    for (int month = 1; month <= 12; ++month)
+        m_ui->comboBoxOtherMonth->addItem(locale.standaloneMonthName(month, QLocale::LongFormat));
 
     slotStandardTimeSpansChanged();
     connect(ApplicationCore::instance().dateChangeWatcher(), &DateChangeWatcher::dateChanged,
             this, &MonthlyTimesheetConfigurationDialog::slotStandardTimeSpansChanged);
-
-    // set current month and year:
-    m_ui->spinBoxMonth->setValue(QDate::currentDate().month());
-    m_ui->spinBoxYear->setValue(QDate::currentDate().year());
 
     // load settings:
     QSettings settings;
@@ -71,6 +69,8 @@ MonthlyTimesheetConfigurationDialog::MonthlyTimesheetConfigurationDialog(QWidget
     } else {
         m_ui->checkBoxActiveOnly->setChecked(true);
     }
+    if (settings.value(MetaKey_MonthlyReportWorkLog).toBool())
+        m_ui->radioButtonWorkLog->setChecked(true);
 }
 
 MonthlyTimesheetConfigurationDialog::~MonthlyTimesheetConfigurationDialog()
@@ -79,9 +79,9 @@ MonthlyTimesheetConfigurationDialog::~MonthlyTimesheetConfigurationDialog()
 
 void MonthlyTimesheetConfigurationDialog::setDefaultMonth(int yearOfMonth, int month)
 {
-    m_ui->spinBoxMonth->setValue(month);
+    m_ui->comboBoxOtherMonth->setCurrentIndex(month - 1);
     m_ui->spinBoxYear->setValue(yearOfMonth);
-    m_ui->comboBoxMonth->setCurrentIndex(4);
+    m_ui->comboBoxMonth->setCurrentIndex(m_monthInfo.size() - 1);
 }
 
 void MonthlyTimesheetConfigurationDialog::accept()
@@ -92,21 +92,27 @@ void MonthlyTimesheetConfigurationDialog::accept()
                       m_ui->checkBoxActiveOnly->isChecked());
     settings.setValue(MetaKey_TimesheetRootTask,
                       m_rootTask);
+    settings.setValue(MetaKey_MonthlyReportWorkLog,
+                      m_ui->radioButtonWorkLog->isChecked());
 
     QDialog::accept();
 }
 
 void MonthlyTimesheetConfigurationDialog::showReportPreviewDialog()
 {
-    QDate start, end;
-    int index = m_ui->comboBoxMonth->currentIndex();
-    if (index == m_monthInfo.size() -1) {
-        // manual selection
-        start = QDate(m_ui->spinBoxYear->value(), m_ui->spinBoxMonth->value(), 1);
-        end = start.addMonths(1);
+    const int index = m_ui->comboBoxMonth->currentIndex();
+    QDate start;
+    if (index == m_monthInfo.size() - 1) {
+        start = QDate(m_ui->spinBoxYear->value(), m_ui->comboBoxOtherMonth->currentIndex() + 1, 1);
     } else {
         start = m_monthInfo[index].timespan.first;
-        end = m_monthInfo[index].timespan.second;
+    }
+    const QDate end = start.addMonths(1);
+    if (m_ui->radioButtonWorkLog->isChecked()) {
+        auto report = new WorkLogReport();
+        report->setReportProperties(start, end, m_rootTask);
+        report->show();
+        return;
     }
     bool activeOnly = m_ui->checkBoxActiveOnly->isChecked();
     auto report = new MonthlyTimeSheetReport();
@@ -126,19 +132,19 @@ void MonthlyTimesheetConfigurationDialog::showEvent(QShowEvent *)
         if (item.isValid()) {
             m_rootTask = root;
             m_ui->labelTaskName->setText(DATAMODEL->fullTaskName(item.task()));
-            m_ui->checkBoxSubTasksOnly->setChecked(true);
+            m_ui->radioButtonSubtasks->setChecked(true);
         }
     }
 }
 
-void MonthlyTimesheetConfigurationDialog::slotCheckboxSubtasksOnlyChecked(bool checked)
+void MonthlyTimesheetConfigurationDialog::slotSubtasksToggled(bool checked)
 {
     if (checked && m_rootTask == 0)
         slotSelectTask();
 
     if (!checked) {
         m_rootTask = 0;
-        m_ui->labelTaskName->setText(tr("(All Tasks)"));
+        m_ui->labelTaskName->setText(tr("(no task chosen)"));
     }
 }
 
@@ -147,29 +153,42 @@ void MonthlyTimesheetConfigurationDialog::slotStandardTimeSpansChanged()
     const TimeSpans timeSpans;
     m_monthInfo = timeSpans.last4Months();
     NamedTimeSpan custom = {
-        tr("Manual Selection"),
+        tr("Other month:"),
         timeSpans.thisMonth().timespan,
         Range
     };
     m_monthInfo << custom;
+
+    const QLocale locale;
     m_ui->comboBoxMonth->clear();
-    for (int i = 0; i < m_monthInfo.size(); ++i)
-        m_ui->comboBoxMonth->addItem(m_monthInfo[i].name);
+    for (int i = 0; i < m_monthInfo.size(); ++i) {
+        const QDate month = m_monthInfo[i].timespan.first;
+        const QString monthName = QStringLiteral("%1 %2")
+                                  .arg(locale.standaloneMonthName(month.month(), QLocale::LongFormat))
+                                  .arg(month.year());
+        QString label = m_monthInfo[i].name;
+        if (i == 0) {
+            label = tr("This month (%1)").arg(monthName);
+        } else if (i == 1) {
+            label = tr("Last month (%1)").arg(monthName);
+        } else if (i < m_monthInfo.size() - 1) {
+            label = monthName;
+        }
+        m_ui->comboBoxMonth->addItem(label);
+    }
+    // the first month the presets do not cover
+    const QDate beforePresets = m_monthInfo[m_monthInfo.size() - 2].timespan.first.addMonths(-1);
+    m_ui->comboBoxOtherMonth->setCurrentIndex(beforePresets.month() - 1);
+    m_ui->spinBoxYear->setValue(beforePresets.year());
     // Set current index to "Last Month" as that's what you'll usually want
     m_ui->comboBoxMonth->setCurrentIndex(1);
 }
 
 void MonthlyTimesheetConfigurationDialog::slotMonthComboItemSelected(int index)
 {
-    // wait for the next update, in this case:
-    if (m_ui->comboBoxMonth->count() == 0 || index == -1) return;
-    Q_ASSERT(m_ui->comboBoxMonth->count() > index);
-
-    if (index == m_monthInfo.size() - 1) {   // manual selection
-        m_ui->groupBox->setEnabled(true);
-    } else {
-        m_ui->groupBox->setEnabled(false);
-    }
+    const bool other = index == m_monthInfo.size() - 1;
+    m_ui->comboBoxOtherMonth->setVisible(other);
+    m_ui->spinBoxYear->setVisible(other);
 }
 
 void MonthlyTimesheetConfigurationDialog::slotSelectTask()
@@ -183,6 +202,6 @@ void MonthlyTimesheetConfigurationDialog::slotSelectTask()
         m_ui->labelTaskName->setText(DATAMODEL->fullTaskName(item.task()));
     } else {
         if (m_rootTask == 0)
-            m_ui->checkBoxSubTasksOnly->setChecked(false);
+            m_ui->radioButtonAllTasks->setChecked(true);
     }
 }

@@ -59,6 +59,7 @@ extern const QString MetaKey_ExportToXmlRecentSavePath;
 extern const QString MetaKey_TimesheetActiveOnly;
 extern const QString MetaKey_TimesheetSubscribedOnly;
 extern const QString MetaKey_TimesheetRootTask;
+extern const QString MetaKey_MonthlyReportWorkLog;
 extern const QString MetaKey_LastEventEditorDateTime;
 extern const QString MetaKey_Key_InstallationId;
 extern const QString MetaKey_Key_UserName;

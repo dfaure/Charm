@@ -128,7 +128,7 @@ EventIdList Charm::eventIdsSortedBy(EventIdList ids, const Charm::SortOrderList 
 
 EventIdList Charm::eventIdsSortedBy(EventIdList ids, SortOrder order)
 {
-    return eventIdsSortedBy(ids, SortOrderList(1) << order);
+    return eventIdsSortedBy(ids, SortOrderList() << order);
 }
 
 EventIdList Charm::filteredBySubtree(EventIdList ids, TaskId parent, bool exclude)
@@ -175,6 +175,11 @@ QString Charm::reportStylesheet(const QPalette &palette)
                       palette.alternateBase().color().name());
         style.replace(QLatin1String("@event_attributes_row_background_color@"),
                       palette.midlight().color().name());
+        const QColor text = palette.text().color();
+        const QColor base = palette.base().color();
+        const QColor muted((text.red() + base.red()) / 2, (text.green() + base.green()) / 2,
+                           (text.blue() + base.blue()) / 2);
+        style.replace(QLatin1String("@muted_color@"), muted.name());
         if (style.isEmpty())
             qWarning() << "reportStylesheet: default style sheet is empty, too bad";
     } else {
