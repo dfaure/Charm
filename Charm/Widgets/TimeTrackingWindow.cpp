@@ -698,15 +698,10 @@ void TimeTrackingWindow::informUserAboutNewRelease(const QString &releaseVersion
     dialog.exec();
 }
 
-void TimeTrackingWindow::handleIdleEvents(IdleDetector *detector, bool restart)
+void TimeTrackingWindow::handleIdleEvents(const IdleDetector::IdlePeriod &period, bool restart)
 {
     EventIdList activeEvents = DATAMODEL->activeEvents();
     DATAMODEL->endAllEventsRequested();
-    // FIXME with this option, we can only change the events to
-    // the start time of one idle period, I chose to use the last
-    // one:
-    const auto periods = detector->idlePeriods();
-    const IdleDetector::IdlePeriod period = periods.last();
 
     Q_FOREACH (EventId eventId, activeEvents) {
         Event event = DATAMODEL->eventForId(eventId);
@@ -737,8 +732,9 @@ void TimeTrackingWindow::maybeIdle(IdleDetector *detector)
 
     const TemporaryValue<bool> tempValue(m_idleCorrectionDialogVisible, true);
 
-    // handle idle merging:
-    IdleCorrectionDialog dialog(detector->idlePeriods().last(), this);
+    // captured before exec(): the detector keeps adding periods while the dialog is open
+    const IdleDetector::IdlePeriod period = detector->idlePeriods().last();
+    IdleCorrectionDialog dialog(period, this);
     MakeTemporarilyVisible m(this);
 
     dialog.exec();
@@ -746,15 +742,11 @@ void TimeTrackingWindow::maybeIdle(IdleDetector *detector)
     case IdleCorrectionDialog::Idle_Ignore:
         break;
     case IdleCorrectionDialog::Idle_EndEvent:
-    {
-        handleIdleEvents(detector, false);
+        handleIdleEvents(period, false);
         break;
-    }
     case IdleCorrectionDialog::Idle_RestartEvent:
-    {
-        handleIdleEvents(detector, true);
+        handleIdleEvents(period, true);
         break;
-    }
     default:
         break; // should not happen
     }

@@ -31,6 +31,7 @@
 #include "Charm/HttpClient/CheckForUpdatesJob.h"
 
 #include "CharmWindow.h"
+#include "Charm/Idle/IdleDetector.h"
 #include "Charm/WeeklySummary.h"
 #include "BillDialog.h"
 
@@ -38,7 +39,6 @@ class HttpJob;
 class CheckForUpdatesJob;
 class CharmCommand;
 class TimeTrackingView;
-class IdleDetector;
 class ReportConfigurationDialog;
 class WeeklyTimesheetConfigurationDialog;
 class MonthlyTimesheetConfigurationDialog;
@@ -135,7 +135,7 @@ private:
     void updateOvertimeLabel();
     void informUserAboutNewRelease(const QString &releaseVersion, const QUrl &link,
                                    const QString &releaseInfoLink);
-    void handleIdleEvents(IdleDetector *detector, bool restart);
+    void handleIdleEvents(const IdleDetector::IdlePeriod &period, bool restart);
 
     WeeklyTimesheetConfigurationDialog *m_weeklyTimesheetDialog = nullptr;
     MonthlyTimesheetConfigurationDialog *m_monthlyTimesheetDialog = nullptr;
